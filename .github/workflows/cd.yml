@@ -1,0 +1,25 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configure Kubectl
+      run: |
+        mkdir -p $HOME/.kube
+
+    - name: Deploy Using Helm
+      run: |
+        helm upgrade --install simple-transaction ./helm/simple-transaction
